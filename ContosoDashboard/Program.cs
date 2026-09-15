@@ -43,6 +43,8 @@ builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IFileStorageService, LocalFileStorageService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 // Add HttpContextAccessor for accessing user claims
 builder.Services.AddHttpContextAccessor();
@@ -57,6 +59,45 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.EnsureCreated(); // For development - use migrations in production
+        context.Database.ExecuteSqlRaw(@"
+            CREATE TABLE IF NOT EXISTS Documents (
+                DocumentId INTEGER NOT NULL CONSTRAINT PK_Documents PRIMARY KEY AUTOINCREMENT,
+                Title TEXT NOT NULL,
+                Description TEXT NULL,
+                Category TEXT NOT NULL,
+                FileName TEXT NOT NULL,
+                StoredFileName TEXT NOT NULL,
+                FilePath TEXT NOT NULL,
+                FileType TEXT NOT NULL,
+                FileSize INTEGER NOT NULL,
+                UploadedByUserId INTEGER NOT NULL,
+                ProjectId INTEGER NULL,
+                TaskId INTEGER NULL,
+                UploadDate TEXT NOT NULL,
+                UpdatedDate TEXT NOT NULL,
+                IsDeleted INTEGER NOT NULL,
+                Status INTEGER NOT NULL,
+                Tags TEXT NULL,
+                CONSTRAINT FK_Documents_Users_UploadedByUserId FOREIGN KEY (UploadedByUserId) REFERENCES Users (UserId) ON DELETE RESTRICT,
+                CONSTRAINT FK_Documents_Projects_ProjectId FOREIGN KEY (ProjectId) REFERENCES Projects (ProjectId) ON DELETE SET NULL,
+                CONSTRAINT FK_Documents_Tasks_TaskId FOREIGN KEY (TaskId) REFERENCES Tasks (TaskId) ON DELETE SET NULL
+            );
+            CREATE TABLE IF NOT EXISTS DocumentShares (
+                DocumentShareId INTEGER NOT NULL CONSTRAINT PK_DocumentShares PRIMARY KEY AUTOINCREMENT,
+                DocumentId INTEGER NOT NULL,
+                UserId INTEGER NOT NULL,
+                SharedByUserId INTEGER NOT NULL,
+                SharedDate TEXT NOT NULL,
+                IsActive INTEGER NOT NULL,
+                CONSTRAINT FK_DocumentShares_Documents_DocumentId FOREIGN KEY (DocumentId) REFERENCES Documents (DocumentId) ON DELETE CASCADE,
+                CONSTRAINT FK_DocumentShares_Users_UserId FOREIGN KEY (UserId) REFERENCES Users (UserId) ON DELETE CASCADE,
+                CONSTRAINT FK_DocumentShares_Users_SharedByUserId FOREIGN KEY (SharedByUserId) REFERENCES Users (UserId) ON DELETE RESTRICT
+            );
+            CREATE INDEX IF NOT EXISTS IX_Documents_UploadedByUserId ON Documents (UploadedByUserId);
+            CREATE INDEX IF NOT EXISTS IX_Documents_ProjectId ON Documents (ProjectId);
+            CREATE INDEX IF NOT EXISTS IX_Documents_TaskId ON Documents (TaskId);
+            CREATE INDEX IF NOT EXISTS IX_Documents_Category ON Documents (Category);
+            CREATE INDEX IF NOT EXISTS IX_DocumentShares_DocumentId_UserId ON DocumentShares (DocumentId, UserId);");
     }
     catch (Exception ex)
     {
