@@ -1,50 +1,48 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: 0.0.0 -> 1.0.0
+- Modified principles: no prior constitution existed in repo; this establishes the initial project constitution
+- Added sections: Training-First Scope, Local-First Architecture, Security-by-Design, Test-First Verification, Simplicity and Maintainability, Additional Constraints, Development Workflow, Governance
+- Removed sections: none
+- Templates requiring updates: .specify/templates/plan-template.md ✅ reviewed, no required changes; .specify/templates/spec-template.md ✅ reviewed, no required changes; .specify/templates/tasks-template.md ✅ reviewed, no required changes
+- Deferred items: TODO(RATIFICATION_DATE): original adoption date not documented in the repo
+-->
+
+# ContosoDashboard Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Training-First Scope
+ContosoDashboard is explicitly a training-only application. Features MUST remain intentionally simple, local-first, and educational; no production claims or compliance guarantees are implied. Scope changes MUST prioritize learning value and safe, isolated demo behavior over operational complexity.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Local-First Architecture
+The application MUST prefer local, offline-supported implementations for data, identity, and storage, with service abstractions that allow later migration to cloud services. Business logic MUST remain decoupled from infrastructure; database and auth choices MUST be replaceable without rewriting domain behavior.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Security-by-Design for Training
+The project MUST enforce authentication, authorization, and data isolation with deliberate guardrails. All protected routes, services, and user-specific data access MUST validate identity and role checks. Security controls in the training app MUST teach defensible patterns, not insecure shortcuts.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Test-First Verification
+Any behavioral change MUST be validated by a focused build or test cycle before completion. For feature work, the author MUST confirm the relevant command(s) pass in this environment; regression fixes MUST include evidence that the original problem is resolved and no new compile errors are introduced.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Simplicity and Maintainability
+The codebase MUST favor clear separation of concerns: models, data access, services, and UI pages stay distinct and readable. Prefer the smallest viable implementation that teaches the concept, and avoid speculative abstractions or framework churn without a documented need.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Additional Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+The project MUST remain compatible with the .NET 10 SDK and current local developer tooling. SQLite is the default development database because it works on ARM64 Windows systems without SQL Server LocalDB dependencies. The project is intentionally not production-hardened and MUST NOT require cloud infrastructure or paid external services to run locally.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+All changes MUST be kept aligned with the repository's training goals and the Spec Kit workflow. New work SHOULD be implemented through explicit requirements, plan checks, and validation runs before completion. Documentation updates are required whenever architecture, runtime assumptions, or setup instructions materially change.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution governs all repository decisions and supersedes informal shortcuts. Any amendment requires a documented rationale, a version bump, and a review of the active templates and runtime guidance for impacts. Changes that affect setup, security posture, or data layer choices MUST be validated with the relevant build or runtime command before acceptance.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Compliance review for each change MUST confirm:
+- scope remains aligned to offline training use,
+- security controls remain intentional and auditable,
+- infrastructure dependencies stay local-first when possible,
+- build or runtime verification is recorded.
+
+**Version**: 1.0.0 | **Ratified**: TODO(RATIFICATION_DATE): original adoption date not documented in the repo | **Last Amended**: 2026-09-15
